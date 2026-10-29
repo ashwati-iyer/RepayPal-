@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>RepayPal: see what you’ll repay before you borrow</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#F7F5EF;--card:#fff;--ink:#0F2A3D;--mut:#5B6B77;--line:#E3E0D6;--teal:#1B8A8F;--amber:#E0A030;--soft:#E8F4F4;--hero:#0F2A3D;--seg:#EFECE3;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0B1620;--card:#13232F;--ink:#EAF0F3;--mut:#9FB0BB;--line:#25384A;--teal:#3FB6BB;--amber:#F0B44A;--soft:#17323A;--hero:#0F3A44;--seg:#1B2F3D;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0B1620;--card:#13232F;--ink:#EAF0F3;--mut:#9FB0BB;--line:#25384A;--teal:#3FB6BB;--amber:#F0B44A;--soft:#17323A;--hero:#0F3A44;--seg:#1B2F3D;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;line-height:1.45}
+.wrap{max-width:1080px;margin:0 auto;padding:24px 20px 40px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:44px;height:44px;border-radius:14px;background:var(--teal);color:#fff;display:grid;place-items:center;font-size:24px;font-weight:700}
+.brand h1{margin:0;font-size:24px;line-height:1.1}
+.brand p{margin:2px 0 0;color:var(--mut);font-size:14px}
+.tbtn{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:8px 14px;font-size:14px;cursor:pointer}
+.grid{display:grid;grid-template-columns:1fr 1.05fr;gap:20px;align-items:start}
+@media (max-width:820px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px}
+h2{margin:0 0 4px;font-size:18px}
+.sub{margin:0 0 16px;color:var(--mut);font-size:14px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.chip{border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:999px;padding:7px 12px;font-size:13px;cursor:pointer}
+.chip:hover,.tbtn:hover{border-color:var(--teal)}
+.f{margin-bottom:18px}
+.f label,.lab{display:flex;justify-content:space-between;align-items:baseline;font-weight:600;font-size:15px;margin-bottom:6px}
+.val{color:var(--teal);font-weight:700}
+.hint{font-size:12.5px;color:var(--mut);margin:4px 0 0}
+input[type=range]{width:100%;accent-color:var(--teal);height:28px}
+.money{display:flex;align-items:center;border:1px solid var(--line);border-radius:12px;padding:0 12px;background:var(--bg)}
+.money span{color:var(--mut)}
+.money input{flex:1;border:0;background:transparent;color:var(--ink);font-size:18px;font-weight:600;padding:10px 6px;outline:0;min-width:0}
+.money:focus-within{border-color:var(--teal);box-shadow:0 0 0 3px var(--soft)}
+.seg{display:flex;background:var(--seg);border-radius:12px;padding:4px;gap:4px}
+.seg button{flex:1;border:0;background:transparent;color:var(--mut);padding:9px 8px;border-radius:9px;font-size:14px;font-weight:600;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.15)}
+button:focus-visible,input:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+.hero{background:var(--hero);color:#fff;border-radius:20px;padding:24px}
+.hero small{color:#C9D4DB;font-size:14px}
+.big{font-size:clamp(38px,7vw,56px);font-weight:800;line-height:1.05;margin:4px 0;letter-spacing:-1px}
+.bar{display:flex;height:16px;border-radius:999px;overflow:hidden;margin:18px 0 10px;background:#ffffff22}
+.bar i{display:block;height:100%;transition:width .3s}
+.leg{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:#E3EAEE}
+.leg b{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+.tile small{color:var(--mut);font-size:13px}
+.tile strong{display:block;font-size:24px;margin-top:2px}
+.meter{height:8px;background:var(--seg);border-radius:99px;margin-top:8px;overflow:hidden}
+.meter i{display:block;height:100%;background:var(--amber);border-radius:99px;transition:width .3s}
+.jr{display:flex;margin-top:10px}
+.jr div{flex:1;border-top:4px solid var(--teal);padding-top:6px;font-size:12.5px;color:var(--mut)}
+.jr div:nth-child(2){border-color:#3aa3a8}.jr div:nth-child(3){border-color:#6bbcbf}.jr div:nth-child(4){border-color:var(--amber)}
+.jr b{display:block;color:var(--ink);font-size:14px}
+.cta{margin-top:14px;display:flex;flex-direction:column;gap:10px}
+.btn{border:0;background:var(--amber);color:#1a1a1a;font-weight:700;font-size:16px;border-radius:14px;padding:14px 18px;cursor:pointer}
+.lead{display:none;gap:10px;flex-direction:column}
+.lead.on{display:flex}
+.lead input{border:1px solid var(--line);border-radius:12px;padding:12px;font-size:16px;background:var(--bg);color:var(--ink)}
+.ok{color:var(--teal);font-weight:600;margin:0}
+.fine{margin-top:18px;font-size:12.5px;color:var(--mut)}
+.hide{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+ <div class="brand"><div class="logo" aria-hidden="true">R</div><div><h1>RepayPal</h1><p>See what you’ll repay, before you borrow.</p></div></div>
+ <button class="tbtn" id="theme" type="button">Dark mode</button>
+</header>
+
+<div class="grid">
+<section class="card" aria-label="Your numbers">
+ <h2>Tell us about your business</h2>
+ <p class="sub">Move the sliders. Your estimate updates instantly.</p>
+ <div class="chips" aria-label="Quick start examples"><span class="hint" style="align-self:center">Try an example:</span>
+  <button class="chip" type="button" data-a="40000" data-s="55000">Restaurant</button>
+  <button class="chip" type="button" data-a="25000" data-s="40000">Retail shop</button>
+  <button class="chip" type="button" data-a="75000" data-s="120000">Trucking</button></div>
+
+ <div class="f"><label for="amtN">How much do you need?</label>
+  <div class="money"><span>$</span><input id="amtN" type="number" inputmode="numeric" min="5000" max="250000" step="500" value="40000"></div>
+  <input id="amt" type="range" min="5000" max="250000" step="1000" value="40000" aria-label="Advance amount"></div>
+
+ <div class="f"><label for="sales">Average monthly sales</label>
+  <div class="money"><span>$</span><input id="sales" type="number" inputmode="numeric" min="5000" step="1000" value="55000"></div>
+  <p class="hint">Used to show how payments fit your sales.</p></div>
+
+ <div class="f"><div class="lab">How you’ll repay</div>
+  <div class="seg" id="mode"><button type="button" data-v="fixed" aria-pressed="true">Fixed payments</button><button type="button" data-v="sales" aria-pressed="false">% of daily sales</button></div></div>
+
+ <div class="f"><div class="lab">Payment schedule</div>
+  <div class="seg" id="freq"><button type="button" data-v="daily" aria-pressed="true">Daily</button><button type="button" data-v="weekly" aria-pressed="false">Weekly</button></div></div>
+
+ <div class="f" id="termBox"><label for="term">Repayment term <span class="val" id="termV"></span></label>
+  <input id="term" type="range" min="3" max="24" step="1" value="9"></div>
+ <div class="f hide" id="holdBox"><label for="hold">Share of sales per payment <span class="val" id="holdV"></span></label>
+  <input id="hold" type="range" min="5" max="25" step="1" value="12">
+  <p class="hint">Slower sales mean smaller payments, so it takes longer to pay off.</p></div>
+
+ <div class="f"><label for="rate">Factor rate <span class="val" id="rateV"></span></label>
+  <input id="rate" type="range" min="1.10" max="1.60" step="0.01" value="1.30">
+  <p class="hint">The factor rate is what you repay for every $1 advanced.</p></div>
+
+ <div class="f" style="margin-bottom:0"><label for="fee">Origination fee <span class="val" id="feeV"></span></label>
+  <input id="fee" type="range" min="0" max="5" step="0.5" value="2"></div>
+</section>
+
+<section aria-live="polite" aria-label="Your estimate">
+ <div class="hero">
+  <small>Estimated total you’ll repay</small>
+  <div class="big" id="total">$0</div>
+  <small id="sum"></small>
+  <div class="bar" id="bar"><i style="background:#5FD0D5"></i><i style="background:#E0A030"></i><i style="background:#F2F2F2"></i></div>
+  <div class="leg"><span><b style="background:#5FD0D5"></b>Cash you receive <span id="lNet"></span></span><span><b style="background:#E0A030"></b>Fees <span id="lFee"></span></span><span><b style="background:#F2F2F2"></b>Financing cost <span id="lCost"></span></span></div>
+ </div>
+ <div class="tiles">
+  <div class="tile"><small id="pLab">Daily payment</small><strong id="pay">$0</strong></div>
+  <div class="tile"><small>Estimated payoff time</small><strong id="dur">0</strong></div>
+  <div class="tile"><small>Estimated APR</small><strong id="apr">0%</strong></div>
+  <div class="tile"><small>Share of your sales</small><strong id="share">0%</strong><div class="meter"><i id="shareBar" style="width:0"></i></div></div>
+ </div>
+ <div class="card" style="margin-top:12px;padding:16px 18px">
+  <div class="lab" style="margin:0">Your repayment journey</div>
+  <div class="jr"><div><b id="j1"></b>25% repaid</div><div><b id="j2"></b>50% repaid</div><div><b id="j3"></b>75% repaid</div><div><b id="j4"></b>Fully repaid</div></div>
+ </div>
+ <div class="cta">
+  <button class="btn" type="button" id="ask">Get a real offer from a funding specialist</button>
+  <div class="lead" id="lead"><input id="nm" placeholder="Your name" aria-label="Your name"><input id="ph" placeholder="Best phone number" inputmode="tel" aria-label="Phone number"><button class="btn" type="button" id="send">Send my estimate</button></div>
+  <p class="ok hide" id="thanks"></p>
+ </div>
+</section>
+</div>
+
+<p class="fine">This tool gives an estimate only. It is not an offer, approval, or commitment to lend. Actual amount, factor rate, fees and repayment terms depend on review of your business and are stated in the financing agreement. APR is an annualized estimate shown for transparency. This is a demo: nothing you type here is sent or stored.</p>
+</div>
+
+<script>
+var $=function(i){return document.getElementById(i)};
+var S={freq:"daily",mode:"fixed"};
+var usd=function(n){return n.toLocaleString("en-US",{style:"currency",currency:"USD",maximumFractionDigits:0})};
+function apr(net,pay,n,ppy){if(pay*n<=net)return 0;var lo=0,hi=1,m;for(var i=0;i<60;i++){m=(lo+hi)/2;var pv=pay*(1-Math.pow(1+m,-n))/m;if(pv>net)lo=m;else hi=m}return m*ppy}
+function mo(t){return t<1?"<1 mo":(Math.round(t*10)/10)+" mo"}
+function run(){
+ var A=+$("amt").value,F=+$("rate").value,fp=+$("fee").value,R=Math.max(+$("sales").value||0,1);
+ var d=S.freq==="daily",ppm=d?21:52/12,ppy=d?252:52;
+ var total=A*F,fee=A*fp/100,net=A-fee,fin=total-A,pay,n,term,sh;
+ if(S.mode==="fixed"){term=+$("term").value;n=Math.round(term*ppm);pay=total/n;sh=pay*ppm/R*100}
+ else{var h=+$("hold").value;sh=h;pay=R/ppm*h/100;n=Math.ceil(total/pay);term=n/ppm}
+ $("termV").textContent=$("term").value+" months";$("holdV").textContent=$("hold").value+"%";
+ $("rateV").textContent=F.toFixed(2);$("feeV").textContent=fp+"%";
+ $("total").textContent=usd(total);
+ $("sum").textContent="for "+usd(A)+" advanced, about "+usd(total-A)+" more than you borrow";
+ var w=function(x){return (x/total*100)+"%"},b=$("bar").children;
+ b[0].style.width=w(net);b[1].style.width=w(fee);b[2].style.width=w(fin);
+ $("lNet").textContent=usd(net);$("lFee").textContent=usd(fee);$("lCost").textContent=usd(fin);
+ $("pLab").textContent=(d?"Daily":"Weekly")+" payment"+(S.mode==="sales"?" (average)":"");
+ $("pay").textContent=usd(pay);$("dur").textContent=mo(term);
+ $("apr").textContent=Math.round(apr(net,pay,n,ppy))+"%";
+ $("share").textContent=(Math.round(sh*10)/10)+"%";$("shareBar").style.width=Math.min(sh*2.5,100)+"%";
+ ["j1","j2","j3","j4"].forEach(function(id,i){$(id).textContent="Month "+(Math.round(term*(i+1)/4*10)/10)});
+}
+function seg(id,key,cb){$(id).addEventListener("click",function(e){var v=e.target.getAttribute("data-v");if(!v)return;S[key]=v;Array.prototype.forEach.call($(id).children,function(c){c.setAttribute("aria-pressed",c===e.target)});if(cb)cb();run()})}
+seg("freq","freq");
+seg("mode","mode",function(){var f=S.mode==="fixed";$("termBox").classList.toggle("hide",!f);$("holdBox").classList.toggle("hide",f)});
+$("amt").addEventListener("input",function(){$("amtN").value=$("amt").value;run()});
+$("amtN").addEventListener("input",function(){var v=Math.min(250000,Math.max(5000,+$("amtN").value||5000));$("amt").value=v;run()});
+["sales","term","hold","rate","fee"].forEach(function(i){$(i).addEventListener("input",run)});
+Array.prototype.forEach.call(document.querySelectorAll(".chip"),function(c){c.addEventListener("click",function(){var a=c.getAttribute("data-a");$("amt").value=a;$("amtN").value=a;$("sales").value=c.getAttribute("data-s");run()})});
+$("ask").addEventListener("click",function(){$("lead").classList.add("on");$("ask").classList.add("hide");$("nm").focus()});
+$("send").addEventListener("click",function(){var n=$("nm").value.trim()||"there";$("lead").classList.remove("on");var t=$("thanks");t.classList.remove("hide");t.textContent="Thanks, "+n+". In the live version, a funding specialist would follow up with your estimate. (Demo: nothing was sent.)"});
+$("theme").addEventListener("click",function(){var r=document.documentElement,dark=r.getAttribute("data-theme")==="dark"||(r.getAttribute("data-theme")!=="light"&&matchMedia("(prefers-color-scheme:dark)").matches);r.setAttribute("data-theme",dark?"light":"dark");$("theme").textContent=dark?"Dark mode":"Light mode"});
+run();
+</script>
+</body>
+</html>
